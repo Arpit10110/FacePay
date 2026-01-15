@@ -3,14 +3,12 @@ import { helper } from "../../utils/index.js";
 
 const test_router = express.Router();
 
-test_router.get("/",helper.rate_limit.read_limit, (req, res) => {
+test_router.get("/",helper.rate_limit.read_limit, (req, res,next) => {
     try {
+        throw new Error("Test Error")
         helper.response.message_success_res(res,"Welcome to FacePay Backend",200)
     } catch (error:any) {
-        return res.json({
-            success:false,
-            message:error.message
-        })
+       return next ( new helper.res_error(error.message,500,false))
     }
 });
 
