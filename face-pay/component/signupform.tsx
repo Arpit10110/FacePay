@@ -9,11 +9,30 @@ import {
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
 import Link from "next/link";
-
+import { errorToast } from "@/utils/toastifier";
+import { useSignupMutation } from "@/hooks/auth_queries";
+import { Singupdatatype } from "@/lib/types/auth_types";
 export function SignupFormDemo() {
+  
+  const [form, setForm] = React.useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+  });
+  const { mutate, isPending } = useSignupMutation();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted");
+    if(form.firstname === "" || form.lastname === "" || form.email === "" || form.password === "") {
+      errorToast("All fields are required");
+      return;
+    }
+    mutate(form as Singupdatatype, {
+      onError: (error: any) => {
+        errorToast(error.message);
+      }
+    });
   };
   return (
     <div className="shadow-input mx-auto w-[100%] text-black rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-white">
@@ -24,20 +43,20 @@ export function SignupFormDemo() {
         <div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
           <LabelInputContainer >
             <Label className="!text-black" htmlFor="firstname">First name</Label>
-            <Input className="!bg-gray-200 !text-black text-[1.3rem]" id="firstname" placeholder="Tyler"  type="text" />
+            <Input onChange={(e) => setForm({ ...form, firstname: e.target.value })} className="!bg-gray-200 !text-black text-[1.3rem]" id="firstname" placeholder="Tyler"  type="text" />
           </LabelInputContainer>
           <LabelInputContainer>
             <Label className="!text-black" htmlFor="lastname">Last name</Label>
-            <Input className="!bg-gray-200 !text-black text-[1.3rem]" id="lastname" placeholder="Durden" type="text" />
+            <Input onChange={(e) => setForm({ ...form, lastname: e.target.value })} className="!bg-gray-200 !text-black text-[1.3rem]" id="lastname" placeholder="Durden" type="text" />
           </LabelInputContainer>
         </div>
         <LabelInputContainer className="mb-4">
           <Label className="!text-black" htmlFor="email">Email Address</Label>
-          <Input className="!bg-gray-200 !text-black text-[1.3rem]" id="email" placeholder="projectmayhem@fc.com" type="email" />
+          <Input onChange={(e) => setForm({ ...form, email: e.target.value })} className="!bg-gray-200 !text-black text-[1.3rem]" id="email" placeholder="projectmayhem@fc.com" type="email" />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label className="!text-black" htmlFor="password">Password</Label>
-          <Input className="!bg-gray-200 !text-black text-[1.3rem]" id="password" placeholder="••••••••" type="password" />
+          <Input onChange={(e) => setForm({ ...form, password: e.target.value })} className="!bg-gray-200 !text-black text-[1.3rem]" id="password" placeholder="••••••••" type="password" />
         </LabelInputContainer>
         <button
           className="group/btn relative block h-10 w-full rounded-md  shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] font-bold  cursor-pointer hover:scale-[1.02] transition-all duration-300  bg-[#02B203] text-white text-[1.3rem] "

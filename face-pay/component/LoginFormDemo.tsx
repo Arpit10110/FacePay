@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
@@ -9,11 +9,21 @@ import {
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { useLoginMutation } from "@/hooks/auth_queries";
 
 export function LoginFormDemo() {
+  const {mutate,isPending,isError,error}= useLoginMutation()
+  const [form,setform] = useState({
+    email:"",
+    password:""
+  })
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted");
+    mutate(form,{
+      onError:(error)=>{
+        console.log(error)
+      }
+    })
   };
   return (
     <div className="shadow-input mx-auto w-[100%] text-black rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-white">
@@ -23,11 +33,11 @@ export function LoginFormDemo() {
       <form className="my-8" onSubmit={handleSubmit}>
         <LabelInputContainer className="mb-4">
           <Label className="!text-black" htmlFor="email">Email Address</Label>
-          <Input className="!bg-gray-200 !text-black text-[1.3rem]" id="email" placeholder="projectmayhem@fc.com" type="email" />
+          <Input onChange={(e)=>setform({...form,email:e.target.value})} className="!bg-gray-200 !text-black text-[1.3rem]" id="email" placeholder="projectmayhem@fc.com" type="email" />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label className="!text-black" htmlFor="password">Password</Label>
-          <Input className="!bg-gray-200 !text-black text-[1.3rem]" id="password" placeholder="••••••••" type="password" />
+          <Input onChange={(e)=>setform({...form,password:e.target.value})} className="!bg-gray-200 !text-black text-[1.3rem]" id="password" placeholder="••••••••" type="password" />
         </LabelInputContainer>
         <button
           className="group/btn relative block h-10 w-full rounded-md  shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] font-bold cursor-pointer hover:scale-[1.02] transition-all duration-300  bg-[#02B203] text-white text-[1.3rem] "

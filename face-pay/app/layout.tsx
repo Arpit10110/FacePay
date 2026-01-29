@@ -1,4 +1,6 @@
+import QueryProvider from "@/component/QueryProvider";
 import type { Metadata } from "next";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Face Pay",
@@ -18,7 +20,10 @@ export default function RootLayout({
 </style>
       </head>
       <body>
+        <QueryProvider>
         {children}
+        </QueryProvider>
+        <ToastContainer />
       </body>
     </html>
   );
